@@ -29,7 +29,7 @@ const user: User = buildUser({
 // }
 ```
 
-This dataset can be as deeply nested as needed and all methods, that are passed as values will be run. This is why the `name` and `job` parameters from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
+This dataset can be as deeply nested as needed and all functions that are passed as values will be run. This is why the `name` and `job` parameters from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
 
 We are able to define overrides when using the builder.
 
@@ -44,7 +44,7 @@ Returns a number that is guaranteed to be unique, accepts a generator as a param
 ```javascript
 const result = sequence(i => `user-${i}`)();
 
-// result ~= `'user-1'`
+// result ~= 'user-1'
 ```
 
 ### # oneOf()
@@ -54,7 +54,7 @@ Returns one of the provided parameters at random.
 ```javascript
 const result = oneOf('Larry', 'Curly', 'Moe')();
 
-// result ~= `'Curly'`
+// result ~= 'Curly'
 ```
 
 ### # arrayOf()
@@ -64,7 +64,7 @@ Returns an array of the provided value a given number of times.
 ```javascript
 const result = arrayOf(faker.color.rgb, 4)();
 
-// result ~= `['#1ECBE1', '#961EE1', '#E1341E', '#6AE11E']`
+// result ~= ['#1ECBE1', '#961EE1', '#E1341E', '#6AE11E']
 ```
 
 # Considerations
