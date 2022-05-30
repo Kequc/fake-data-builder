@@ -1,0 +1,29 @@
+{
+  "name": "fake-data-builder",
+  "version": "0.0.1",
+  "description": "Generates fake data for testing",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "test": "kequtest --ts",
+    "watch": "nodemon --watch \"**\" --ext \"ts\" --exec \"npm t\""
+  },
+  "keywords": [
+    "testing",
+    "fixtures",
+    "test",
+    "factory"
+  ],
+  "author": "Nathan Lunde-Berry",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.36",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "eslint": "^8.16.0",
+    "kequtest": "^1.0.1",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.2"
+  }
+}
