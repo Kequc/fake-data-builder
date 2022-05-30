@@ -1,6 +1,4 @@
-type TGenerator = () => TValue;
-type TValue = number | string | boolean | Date | TData | TGenerator | null | undefined | TValue[];
-type TData = { [key: string]: TValue };
+import { TValue, TGenerator, TData } from './types';
 
 export function build<T = TData> (data: TData) {
     if (isStatic(data) || Array.isArray(data)) {
@@ -78,7 +76,7 @@ function deepAssign (target: TData, source: TData): TData {
 
         if (typeof value === 'function') {
             // function
-            target[key] = value();
+            target[key] = parseValue(value());
         } else if (isStatic(value)) {
             // simple replacement
             target[key] = value;
