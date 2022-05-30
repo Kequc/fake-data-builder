@@ -1,6 +1,6 @@
 {
   "name": "fake-data-builder",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Generates fake data for testing",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
