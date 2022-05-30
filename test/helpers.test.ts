@@ -26,7 +26,7 @@ describe('sequence', () => {
     it('parses the result', () => {
         const sequencer = sequence((i) => () => `hello-${i}`);
 
-        assert.strictEqual(`hello-${0}`, sequencer() as string);
+        assert.strictEqual(`hello-${1}`, sequencer() as string);
     });
 });
 
