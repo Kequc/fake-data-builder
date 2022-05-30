@@ -9,6 +9,13 @@
     "test": "kequtest --ts",
     "watch": "nodemon --watch \"**\" --ext \"ts\" --exec \"npm t\""
   },
+  "files": [
+    "dist"
+  ],
+  "bugs": {
+    "url": "https://github.com/Kequc/fake-data-builder/issues"
+  },
+  "homepage": "https://github.com/Kequc/fake-data-builder#readme",
   "keywords": [
     "testing",
     "fixtures",
