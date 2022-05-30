@@ -1,13 +1,13 @@
 import { TGenerator, TValue } from './types';
 import { parseValue } from './util';
 
-let _sequence = 0;
-
 export function sequence (generator?: (i: number) => TValue): TGenerator {
+    let count = 0;
+
     return function () {
-        _sequence++;
-        if (typeof generator === 'function') return parseValue(generator(_sequence));
-        return _sequence;
+        count++;
+        if (typeof generator === 'function') return parseValue(generator(count));
+        return count;
     };
 }
 

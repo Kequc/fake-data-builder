@@ -5,33 +5,28 @@ import { sequence, oneOf, arrayOf } from '../src/index';
 describe('sequence', () => {
     it('returns a number in sequence', () => {
         const sequencer = sequence();
-        const start = sequencer() as number;
 
-        assert.strictEqual(start + 1, sequencer() as number);
-        assert.strictEqual(start + 2, sequencer() as number);
-        assert.strictEqual(start + 3, sequencer() as number);
-        assert.strictEqual(start + 4, sequencer() as number);
-        assert.strictEqual(start + 5, sequencer() as number);
+        assert.strictEqual(1, sequencer() as number);
+        assert.strictEqual(2, sequencer() as number);
+        assert.strictEqual(3, sequencer() as number);
+        assert.strictEqual(4, sequencer() as number);
+        assert.strictEqual(5, sequencer() as number);
     });
 
     it('generates a value from a generator', () => {
         const sequencer = sequence((i) => `hello-${i}`);
-        const value = sequencer() as string;
-        const start = parseInt(value.split('-').pop(), 10);
 
-        assert.strictEqual(`hello-${start + 1}`, sequencer() as string);
-        assert.strictEqual(`hello-${start + 2}`, sequencer() as string);
-        assert.strictEqual(`hello-${start + 3}`, sequencer() as string);
-        assert.strictEqual(`hello-${start + 4}`, sequencer() as string);
-        assert.strictEqual(`hello-${start + 5}`, sequencer() as string);
+        assert.strictEqual(`hello-${1}`, sequencer() as string);
+        assert.strictEqual(`hello-${2}`, sequencer() as string);
+        assert.strictEqual(`hello-${3}`, sequencer() as string);
+        assert.strictEqual(`hello-${4}`, sequencer() as string);
+        assert.strictEqual(`hello-${5}`, sequencer() as string);
     });
 
     it('parses the result', () => {
         const sequencer = sequence((i) => () => `hello-${i}`);
-        const value = sequencer() as string;
-        const start = parseInt(value.split('-').pop(), 10);
 
-        assert.strictEqual(`hello-${start + 1}`, sequencer() as string);
+        assert.strictEqual(`hello-${0}`, sequencer() as string);
     });
 });
 

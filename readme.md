@@ -29,9 +29,9 @@ const user: User = buildUser({
 // }
 ```
 
-This dataset can be as deeply nested as needed and all methods, that are passed as values will be run. This is why the `name` and `job` parameters from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
-
 We are also able to use overrides when using the builder.
+
+This dataset can be as deeply nested as needed and all methods, that are passed as values will be run. This is why the `name` and `job` parameters from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
 
 # Helpers
 
@@ -88,24 +88,24 @@ const buildManager = build<Manager>({
 const manager = buildManager();
 
 // manager ~= {
-//     id: 2,
+//     id: 1,
 //     name: 'Joann Osinski',
 //     address: {
-//         id: 3,
+//         id: 1,
 //         city: 'East Jarretmouth',
 //         country: 'Greece'
 //     },
 //     employees: [
 //         {
-//             id: 4,
+//             id: 2,
 //             name: 'Marcella Huels',
 //             job: 'Customer Intranet Developer'
 //         }, {
-//             id: 5,
+//             id: 3,
 //             name: 'Alfonso Beer',
 //             job: 'Designer'
 //         }, {
-//             id: 6,
+//             id: 4,
 //             name: 'Kelvin Sporer',
 //             job: 'Assistant'
 //         }
