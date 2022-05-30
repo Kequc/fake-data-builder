@@ -81,3 +81,15 @@ it('throws error with invalid override', () => {
     assert.throws(() => builder([{ hello: 'there' }] as any));
     assert.throws(() => builder(1 as any));
 });
+
+it('supports nested builders', () => {
+    const buildera = build({ test3: () => 'there' });
+    const builderb = build({ test1: 'hello', test2: buildera });
+
+    assert.deepStrictEqual(builderb(), {
+        test1: 'hello',
+        test2: {
+            test3: 'there'
+        }
+    });
+});

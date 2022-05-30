@@ -3,7 +3,7 @@ export * from './helpers';
 import { TData } from './types';
 import { deepAssign, isStatic, parseValue } from './util';
 
-export function build<T> (data: TData) {
+export function build<T = TData> (data: TData) {
     if (isStatic(data) || Array.isArray(data)) {
         throw new Error('Builder data must be an object');
     }
