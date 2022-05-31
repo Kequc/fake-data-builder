@@ -1,4 +1,4 @@
-import { TValue, TData, TOverride, TBuild, TGenValue } from './types';
+import { TValue, TData, TOverride, TBuild, TGenValue, TGen } from './types';
 
 export function build<T = TData> (data: TBuild<T>) {
     if (!isData(data)) {
@@ -20,28 +20,28 @@ export function build<T = TData> (data: TBuild<T>) {
     };
 }
 
-export function sequence (generator?: (i: number) => TValue): TGenValue {
+export function sequence<T = number> (generator?: (i: number) => TGen<T>): () => T {
     let count = 0;
+    const isFunction = typeof generator === 'function';
 
     return function () {
         count++;
-        if (typeof generator === 'function') return parseValue(generator(count));
-        return count;
+        return (isFunction ? parseValue(generator(count)) : count) as unknown as T;
     };
 }
 
-export function oneOf (...values: TValue[]): TGenValue {
+export function oneOf<T = TValue> (...values: TGen<T>[]): () => T {
     return function () {
-        return parseValue(values[Math.floor(Math.random() * values.length)]);
+        return parseValue(values[Math.floor(Math.random() * values.length)]) as unknown as T;
     };
 }
 
-export function arrayOf (value: TValue, count = 1): TGenValue {
+export function arrayOf<T = TValue> (value: TGen<T>, count = 1): () => T[] {
     return function () {
-        const result: TValue = [];
+        const result: T[] = [];
 
         for (let i = 0; i < count; i++) {
-            result.push(parseValue(value));
+            result.push(parseValue(value) as unknown as T);
         }
 
         return result;

@@ -97,7 +97,6 @@ describe('build', () => {
     });
 });
 
-
 describe('sequence', () => {
     it('returns a number in sequence', () => {
         const sequencer = sequence();
