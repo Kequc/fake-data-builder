@@ -1,4 +1,4 @@
-import { TValue, TData, TOverride, TBuild, TGenValue, TGen } from './types';
+import { TValue, TData, TOverride, TBuild, TGen } from './types';
 
 export function build<T = TData> (data: TBuild<T>) {
     if (!isData(data)) {
