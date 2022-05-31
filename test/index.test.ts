@@ -60,6 +60,7 @@ describe('build', () => {
             test6: {
                 test7: 'harry potter'
             },
+            // @ts-ignore
             test9: 'over here'
         }), {
             test1: 'something',
@@ -85,7 +86,7 @@ describe('build', () => {
 
     it('supports nested builders', () => {
         const buildera = build({ test3: () => 'there' });
-        const builderb = build({ test1: 'hello', test2: buildera });
+        const builderb = build({ test1: 'hello', test2: () => buildera() });
 
         assert.deepStrictEqual(builderb(), {
             test1: 'hello',

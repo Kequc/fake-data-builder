@@ -1,11 +1,11 @@
-import { TValue, TGenerator, TData } from './types';
+import { TValue, TData, TOverride, TBuild, TGenValue } from './types';
 
-export function build<T = TData> (data: TData) {
+export function build<T = TData> (data: TBuild<T>) {
     if (!isData(data)) {
         throw new Error('Builder must be an object');
     }
 
-    return function (override?: TData): T {
+    return function (override?: TOverride<T>): T {
         const result = parseData(data);
 
         if (override) {
@@ -20,7 +20,7 @@ export function build<T = TData> (data: TData) {
     };
 }
 
-export function sequence (generator?: (i: number) => TValue): TGenerator {
+export function sequence (generator?: (i: number) => TValue): TGenValue {
     let count = 0;
 
     return function () {
@@ -30,13 +30,13 @@ export function sequence (generator?: (i: number) => TValue): TGenerator {
     };
 }
 
-export function oneOf (...values: TValue[]): TGenerator {
+export function oneOf (...values: TValue[]): TGenValue {
     return function () {
         return parseValue(values[Math.floor(Math.random() * values.length)]);
     };
 }
 
-export function arrayOf (value: TValue, count = 1): TGenerator {
+export function arrayOf (value: TValue, count = 1): TGenValue {
     return function () {
         const result: TValue = [];
 

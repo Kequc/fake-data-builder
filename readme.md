@@ -14,8 +14,8 @@ import { faker } from '@faker-js/faker';
 
 const buildUser = build<User>({
     id: sequence(),
-    name: faker.name.findName,
-    job: faker.name.jobTitle
+    name: () => faker.name.findName(),
+    job: () => faker.name.jobTitle()
 });
 
 const user: User = buildUser({
@@ -29,7 +29,7 @@ const user: User = buildUser({
 // }
 ```
 
-This dataset can be as deeply nested as needed and all functions that are passed as values will be run. Any method can be used to generate values for fields. The `name` and `job` parameters from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
+This dataset can be as deeply nested as needed and all functions that are passed as values will be run. Any method can be used to generate values for fields. The `name` and `job` fields from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
 
 # Helpers
 
@@ -72,15 +72,15 @@ A builder can be provided as the value for another builder.
 ```javascript
 const buildAddress = build<Address>({
     id: sequence(),
-    city: faker.address.city,
-    country: faker.address.country
+    city: () => faker.address.city(),
+    country: () => faker.address.country()
 });
 
 const buildManager = build<Manager>({
     id: sequence(),
-    name: faker.name.findName,
-    address: buildAddress,
-    employees: arrayOf(buildUser, 3)
+    name: () => faker.name.findName(),
+    address: () => buildAddress(),
+    employees: arrayOf(() => buildUser(), 3)
 });
 
 const manager = buildManager();
