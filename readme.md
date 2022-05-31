@@ -29,9 +29,7 @@ const user: User = buildUser({
 // }
 ```
 
-This dataset can be as deeply nested as needed and all functions that are passed as values will be run. This is why the `name` and `job` parameters from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
-
-We are able to define overrides when using the builder.
+This dataset can be as deeply nested as needed and all functions that are passed as values will be run. Any method can be used to generate values for fields. The `name` and `job` parameters from our user example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) library.
 
 # Helpers
 
@@ -132,6 +130,15 @@ manager.employees[0].name = 'Samuel Mittensworth';
 manager.employees[2] = buildUser({
     job: 'Executive Assistant'
 });
+```
+
+It is possible to trigger an infinite loop if the data structure is recursive.
+
+```javascript
+const a = build({ b });
+const b = build({ a });
+
+a(); // triggers infinite loop
 ```
 
 # Conclusion
