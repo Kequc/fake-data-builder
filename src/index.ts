@@ -1,11 +1,11 @@
-import { TValue, TData, TOverride, TBuilder, TGen } from './types';
+import { TValue, TData, TOverrideData, TBuilderData, TGen } from './types';
 
-export function build<T = TData> (builder: TBuilder<T>) {
+export function build<T = TData> (builder: TBuilderData<T>) {
     if (!isData(builder)) {
         throw new Error('Builder must be an object');
     }
 
-    return function (override?: TOverride<T>): T {
+    return function (override?: TOverrideData<T>): T {
         const result = parseData(builder);
 
         if (override) {
