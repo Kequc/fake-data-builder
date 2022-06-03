@@ -1,12 +1,12 @@
-import { TValue, TData, TOverride, TBuild, TGen } from './types';
+import { TValue, TData, TOverride, TBuilder, TGen } from './types';
 
-export function build<T = TData> (data: TBuild<T>) {
-    if (!isData(data)) {
+export function build<T = TData> (builder: TBuilder<T>) {
+    if (!isData(builder)) {
         throw new Error('Builder must be an object');
     }
 
     return function (override?: TOverride<T>): T {
-        const result = parseData(data);
+        const result = parseData(builder);
 
         if (override) {
             if (!isData(override)) {
@@ -66,7 +66,7 @@ function parseData (data: TData): TData {
     return result;
 }
 
-function deepAssign (target: TData, source: TData): TData {
+function deepAssign (target: TData, source: TData) {
     for (const key of Object.keys(source)) {
         if (!isData(source[key]) || !isData(target[key])) {
             target[key] = source[key];
@@ -74,8 +74,6 @@ function deepAssign (target: TData, source: TData): TData {
             deepAssign(target[key] as TData, source[key] as TData);
         }
     }
-
-    return target;
 }
 
 function isData (value: TValue): boolean {

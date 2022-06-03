@@ -60,7 +60,7 @@ const result = oneOf('Larry', 'Curly', 'Moe')();
 Returns an array of the provided value a given number of times.
 
 ```javascript
-const result = arrayOf(faker.color.rgb, 4)();
+const result = arrayOf(() => faker.color.rgb(), 4)();
 
 // result ~= ['#1ECBE1', '#961EE1', '#E1341E', '#6AE11E']
 ```
