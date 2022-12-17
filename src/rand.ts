@@ -30,11 +30,11 @@ export function randString (opt?: TStringOptions): () => string {
     for (const c of charset.split('')) {
         chars += CHAR_LIST[c] ?? '';
     }
-    const _randInt = randInt({ max: chars.length });
+    const charIndex = randInt({ max: chars.length });
     return () => {
         let result = '';
         for (let i = 0; i < length; i++) {
-            result += chars.charAt(_randInt() - 1);
+            result += chars.charAt(charIndex() - 1);
         }
         return result;
     };
@@ -53,9 +53,9 @@ export function randParagraph (opt?: TParagraphOptions): () => string {
     const numWords = randInt(minMax(5, 20, opt?.wordsMin, opt?.wordsMax));
     const numSentences = randInt(minMax(5, 20, opt?.sentencesMin, opt?.sentencesMax));
     const separator = typeof opt?.separator === 'string' ? opt.separator : '\n\n';
-    const _randWords = randWord({ multiply: numWords() });
+    const randWords = randWord({ multiply: numWords() });
     function generateParagraph () {
-        return generateArray(numSentences(), () => capitalize(_randWords()) + '.').join(' ');
+        return generateArray(numSentences(), () => capitalize(randWords()) + '.').join(' ');
     }
     return () => {
         return generateArray(opt?.multiply ?? 1, generateParagraph).join(separator);
@@ -120,10 +120,4 @@ function minMax (min: number, max: number, newMin?: number, newMax?: number): { 
 
 function generateArray<T> (length: number, containing: () => T): T[] {
     return Array(length).fill(undefined).map(containing);
-}
-
-function getTime (def: number, date?: number | Date): number {
-    if (typeof date === 'number') return date;
-    if (date instanceof Date) return date.getTime();
-    return def;
 }

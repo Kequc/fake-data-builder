@@ -1,6 +1,6 @@
 export const YEAR_MS = 31557600000;
 
-export const CHAR_LIST: { [key: string]: string} = {
+export const CHAR_LIST: { [key: string]: string } = {
     l: 'abcdefghijklmnopqrstuvwxyz',
     u: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
     n: '0123456789',
