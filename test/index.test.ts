@@ -16,6 +16,8 @@ describe('build', () => {
                 test9: [() => 'cc', () => 'dd']
             }
         });
+        const test = builder();
+        test.test6.test9;
 
         assert.deepStrictEqual(builder(), {
             test1: 'hello',
@@ -26,7 +28,7 @@ describe('build', () => {
             test6: {
                 test7: 'foo',
                 test8: ['foo', 'bar'],
-                test9: ['cc', 'dd']
+                test9: ['cc', 'dd'],
             }
         });
     });
@@ -43,12 +45,12 @@ describe('build', () => {
         const builder = build({
             test1: 'hello',
             test2: 2,
-            test3: ['happy', 'halloween'],
+            test3: () => ['happy', 'halloween'],
             test4: () => 'functional',
             test5: 'normal',
             test6: {
-                test7: 'foo',
-                test8: ['foo', 'bar']
+                test7: () => 'foo',
+                test8: () => ['foo', 'bar']
             }
         });
 

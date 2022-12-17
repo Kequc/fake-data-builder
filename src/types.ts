@@ -1,17 +1,19 @@
 export type TGen<T> = T | (() => T);
-export type TValue = number | string | boolean | Date | TData | (() => TValue) | null | undefined | TValue[];
-export type TData = { [key: string]: TValue };
+export type TData = { [key: string]: unknown };
+export type TReturns<T> = T extends (...args: never) => infer R ? R : T;
 
-type TBuilder<T> = T extends object ? TGen<{
-    [K in keyof T]: TBuilder<T[K]>;
-}> : TGen<T>;
-type TOverride<T> = T extends object ? TGen<{
-    [K in keyof T]?: TOverride<T[K]>;
-}> : TGen<T>;
-
-export type TBuilderData<T> = {
-    [K in keyof T]: TBuilder<T[K]>;
+export type TBuilder<T> = {
+    [K in keyof T]: TGen<T[K] extends object
+        ? TBuilder<T[K]>
+        : T[K]>;
 };
-export type TOverrideData<T> = {
-    [K in keyof T]?: TOverride<T[K]>;
+export type TOverride<T> = {
+    [K in keyof T]?: TGen<T[K] extends object
+        ? TOverride<T[K]>
+        : T[K]>;
+};
+export type TBuilt<T> = {
+    [K in keyof T]: TReturns<T[K]> extends object
+        ? TBuilt<TReturns<T[K]>>
+        : TReturns<T[K]>;
 };

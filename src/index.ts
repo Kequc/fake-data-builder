@@ -1,11 +1,12 @@
-import { TValue, TData, TOverrideData, TBuilderData, TGen } from './types';
+import { TData, TOverride, TBuilder, TGen, TBuilt, TReturns } from './types';
+export * from './rand';
 
-export function build<T = TData> (builder: TBuilderData<T>) {
+export function build<T> (builder: TBuilder<T>) {
     if (!isData(builder)) {
         throw new Error('Builder must be an object');
     }
 
-    return function (override?: TOverrideData<T>): T {
+    return function (override?: TOverride<T>): T {
         const result = parseData(builder);
 
         if (override) {
@@ -30,13 +31,13 @@ export function sequence<T = number> (generator?: (i: number) => TGen<T>): () =>
     };
 }
 
-export function oneOf<T = TValue> (...values: TGen<T>[]): () => T {
+export function oneOf<T> (...values: TGen<T>[]): () => T {
     return function () {
         return parseValue(values[Math.floor(Math.random() * values.length)]) as unknown as T;
     };
 }
 
-export function arrayOf<T = TValue> (value: TGen<T>, count = 1): () => T[] {
+export function arrayOf<T> (value: TGen<T>, count = 1): () => T[] {
     return function () {
         const result: T[] = [];
 
@@ -48,16 +49,16 @@ export function arrayOf<T = TValue> (value: TGen<T>, count = 1): () => T[] {
     };
 }
 
-function parseValue (value: TValue): TValue {
+function parseValue (value: unknown): TReturns<unknown> {
     if (typeof value === 'function') return parseValue(value());
     if (Array.isArray(value)) return value.map(parseValue);
-    if (isData(value)) return parseData(value as TData);
+    if (isData(value)) return parseData(value);
 
     return value;
 }
 
-function parseData (data: TData): TData {
-    const result: TData = {};
+function parseData (data: TData): TBuilt<TData> {
+    const result: TBuilt<TData> = {};
 
     for (const key of Object.keys(data)) {
         result[key] = parseValue(data[key]);
@@ -66,17 +67,20 @@ function parseData (data: TData): TData {
     return result;
 }
 
-function deepAssign (target: TData, source: TData) {
+function deepAssign (target: TBuilt<TData>, source: TBuilt<TData>) {
     for (const key of Object.keys(source)) {
-        if (!isData(source[key]) || !isData(target[key])) {
-            target[key] = source[key];
+        const a = target[key] as TBuilt<TData>;
+        const b = source[key] as TBuilt<TData>;
+
+        if (isData(a) && isData(b)) {
+            deepAssign(a, b);
         } else {
-            deepAssign(target[key] as TData, source[key] as TData);
+            target[key] = source[key];
         }
     }
 }
 
-function isData (value: TValue): boolean {
+function isData (value: unknown): value is TData {
     // Data object not a Set, Function, null, Date, Array, etc.
     return Object.prototype.toString.call(value) === '[object Object]';
 }
