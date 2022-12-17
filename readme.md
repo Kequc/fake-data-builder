@@ -197,7 +197,7 @@ randString({ charset: '', chars: 'abcde', length: 6 })();
 
 ### # randWord()
 
-Generate a random string from a word list. Can be given `capitalize` `uppercase`, the defaults are `false` `false` these are the formatting of the word. Can be given `multiply` `seprator`, the defaults are `1` `' '` these are how many words to generate and how to separate them.
+Generate a random string from a word list. Can be given `capitalize` `uppercase`, the defaults are `false` `false` these are the formatting of the word. Can be given `multiply` `separator`, the defaults are `1` `' '` these are how many words to generate and how to separate them.
 
 ```javascript
 randWord({ capitalize: true })();
@@ -207,7 +207,7 @@ randWord({ capitalize: true })();
 
 ### # randParagraph()
 
-Generate a random string made up of many sentences. Can be given `sentencesMin` `sentencesMax`, the defaults are `5` `20` these are the number of sentences per paragraph. Can be given `wordsMin` `wordsMax`, the defaults are `5` `20` these are the number of words per sentence. Can be given `multiply` `seprator`, the defaults are `1` `'\n\n'` these are how many paragraphs to generate and how to separate them.
+Generate a random string made up of many sentences. Can be given `sentencesMin` `sentencesMax`, the defaults are `5` `20` these are the number of sentences per paragraph. Can be given `wordsMin` `wordsMax`, the defaults are `5` `20` these are the number of words per sentence. Can be given `multiply` `separator`, the defaults are `1` `'\n\n'` these are how many paragraphs to generate and how to separate them.
 
 ```javascript
 randSentence({ sentencesMin: 2, sentencesMax: 50, multiply: 2 })();
