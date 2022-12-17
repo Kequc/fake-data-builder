@@ -53,9 +53,11 @@ export function randParagraph (opt?: TParagraphOptions): () => string {
     const numWords = randInt(minMax(5, 20, opt?.wordsMin, opt?.wordsMax));
     const numSentences = randInt(minMax(5, 20, opt?.sentencesMin, opt?.sentencesMax));
     const separator = typeof opt?.separator === 'string' ? opt.separator : '\n\n';
-    const randWords = randWord({ multiply: numWords() });
+    function generateSentence () {
+        return capitalize(randWord({ multiply: numWords() })()) + '.';
+    }
     function generateParagraph () {
-        return generateArray(numSentences(), () => capitalize(randWords()) + '.').join(' ');
+        return generateArray(numSentences(), generateSentence).join(' ');
     }
     return () => {
         return generateArray(opt?.multiply ?? 1, generateParagraph).join(separator);
