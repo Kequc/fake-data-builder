@@ -54,18 +54,20 @@ randFloat({ min: 11, max: 22.5 })();
 
 ### # randBoolean()
 
-Generate either `true` or `false`.
+Generate either `true` or `false`. Can be given a `median` value, this determines the likelihood of being true.
 
 ```javascript
-randBoolean()();
+randBoolean({ median: 0.6 })();
 ```
+
+<sup>Will be `true` 60% of the time.</sup>
 
 ### # randDate()
 
 Generate a random `Date` object. Can be given `timeAgo` `fromNow` values in ms, the defaults are `31557600000 * 2` (2 years) `0`.
 
 ```javascript
-randDate({ timeAgo: 0, fromNow: 900000; })();
+randDate({ timeAgo: 0, fromNow: 900000 })();
 ```
 
 <sup>`Date` object between now and 15 minutes from now.</sup>

@@ -1,7 +1,12 @@
 import { CHAR_LIST, WORD_LIST, YEAR_MS } from './data';
 
-export function randBoolean (): () => boolean {
-    return () => Math.random() < 0.5;
+type TBooleanOptions = {
+    median?: number;
+};
+
+export function randBoolean (opt?: TBooleanOptions): () => boolean {
+    const median = check<number>(0.5, opt?.median);
+    return () => Math.random() < median;
 }
 
 type TDateOptions = {
