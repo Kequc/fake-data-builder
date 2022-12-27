@@ -20,24 +20,20 @@ type TStringOptions = {
     charset?: string;
     chars?: string;
     length?: number;
+    prefix?: string;
+    postfix?: string;
 };
 
 export function randString (opt?: TStringOptions): () => string {
-    let chars = '';
-    const charset = typeof opt?.charset === 'string' ? opt.charset : 'ln';
-    const length = typeof opt?.length === 'number' ? opt.length : 5;
-    if (typeof opt?.chars === 'string') chars += opt.chars;
-    for (const c of charset.split('')) {
-        chars += CHAR_LIST[c] ?? '';
+    const charset = check<string>('ln', opt?.charset);
+    const length = check<number>(5, opt?.length);
+    const chars = charset.split('').map(c => check<string>('', CHAR_LIST[c])).join('') + check<string>('', opt?.chars);
+    const prefix = check<string>('', opt?.prefix);
+    const postfix = check<string>('', opt?.postfix);
+    function generateChar () {
+        return chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    const charIndex = randInt({ max: chars.length });
-    return () => {
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += chars.charAt(charIndex() - 1);
-        }
-        return result;
-    };
+    return () => prefix + generateArray(length, generateChar).join('') + postfix;
 }
 
 type TParagraphOptions = {
@@ -52,16 +48,15 @@ type TParagraphOptions = {
 export function randParagraph (opt?: TParagraphOptions): () => string {
     const numWords = randInt(minMax(5, 20, opt?.wordsMin, opt?.wordsMax));
     const numSentences = randInt(minMax(5, 20, opt?.sentencesMin, opt?.sentencesMax));
-    const separator = typeof opt?.separator === 'string' ? opt.separator : '\n\n';
+    const multiply = check<number>(1, opt?.multiply);
+    const separator = check<string>('\n\n', opt?.separator);
     function generateSentence () {
-        return capitalize(randWord({ multiply: numWords() })()) + '.';
+        return capitalize(generateArray(numWords(), chooseWord).join(' ') + '.');
     }
     function generateParagraph () {
         return generateArray(numSentences(), generateSentence).join(' ');
     }
-    return () => {
-        return generateArray(opt?.multiply ?? 1, generateParagraph).join(separator);
-    };
+    return () => generateArray(multiply, generateParagraph).join(separator);
 }
 
 type TWordOptions = {
@@ -72,15 +67,15 @@ type TWordOptions = {
 };
 
 export function randWord (opt?: TWordOptions): () => string {
-    const separator = typeof opt?.separator === 'string' ? opt.separator : ' ';
-    const wordIndex = randInt({ max: WORD_LIST.length });
+    const multiply = check<number>(1, opt?.multiply);
+    const separator = check<string>(' ', opt?.separator);
     function generateWord () {
-        const word = WORD_LIST[wordIndex() - 1];
+        const word = chooseWord();
         if (opt?.uppercase) return word.toUpperCase();
         if (opt?.capitalize) return capitalize(word);
         return word;
     }
-    return () => generateArray(opt?.multiply ?? 1, generateWord).join(separator);
+    return () => generateArray(multiply, generateWord).join(separator);
 }
 
 type TFloatOptions = {
@@ -89,10 +84,8 @@ type TFloatOptions = {
 };
 
 export function randFloat (opt?: TFloatOptions): () => number {
-    const size = minMax(0, 1, opt?.min, opt?.max);
-    return () => {
-        return (Math.random() * (size.max - size.min)) + size.min;
-    };
+    const { min, max } = minMax(0, 1, opt?.min, opt?.max);
+    return () => (Math.random() * (max - min)) + min;
 }
 
 type TIntOptions = {
@@ -101,23 +94,29 @@ type TIntOptions = {
 };
 
 export function randInt (opt?: TIntOptions): () => number {
-    const size = minMax(1, 10, opt?.min, opt?.max);
-    return () => {
-        return Math.floor(Math.random() * ((size.max - size.min) + 1)) + size.min;
-    };
+    const { min, max } = minMax(1, 10, opt?.min, opt?.max);
+    return () => Math.floor(Math.random() * ((max - min) + 1)) + min;
 }
 
 // utils
+
+function chooseWord () {
+    return WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+}
 
 function capitalize (word: string): string {
     return word[0].toUpperCase() + word.slice(1);
 }
 
 function minMax (min: number, max: number, newMin?: number, newMax?: number): { min: number, max: number } {
-    if (typeof newMax === 'number' && newMax > 0) max = newMax;
-    if (typeof newMin === 'number' && newMin > 0) min = newMin;
+    if (typeof newMax === 'number') max = newMax;
+    if (typeof newMin === 'number') min = newMin;
     if (max < min) max = min;
     return { min, max };
+}
+
+function check<T> (def: T, value?: unknown): T {
+    return (typeof def === typeof value) ? value as T : def;
 }
 
 function generateArray<T> (length: number, containing: () => T): T[] {

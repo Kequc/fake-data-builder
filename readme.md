@@ -9,13 +9,12 @@ npm i -D fake-data-builder
 # Usage
 
 ```javascript
-import { build, sequence } from 'fake-data-builder';
-import { faker } from '@faker-js/faker';
+import { build, sequence, randWord } from 'fake-data-builder';
 
 const buildUser = build<User>({
     id: sequence(),
-    name: () => faker.name.findName(),
-    job: () => faker.name.jobTitle()
+    name: randWord({ multiply: 2, capitalize: true }),
+    job: randWord({ multiply: 3, capitalize: true })
 });
 
 const user: User = buildUser({
@@ -25,127 +24,13 @@ const user: User = buildUser({
 // user ~= {
 //     id: 1,
 //     name: 'Harry Hands',
-//     job: 'Global Accounts Engineer'
+//     job: 'Ancient Usually Putting'
 // }
 ```
 
-This dataset can be as deeply nested as needed, all functions that are passed as values will be run. Any method can be used to generate values for fields. The `name` and `job` fields from this example are pointed at methods found in the [faker](https://www.npmjs.com/package/@faker-js/faker) npm library.
-
-# Helpers
-
-There are a small number of helpers included.
-
-### # sequence()
-
-Returns a number that is guaranteed to be unique, accepts a generator as a parameter for more control.
-
-```javascript
-const result = sequence(i => `user-${i}`)();
-
-// result ~= 'user-1'
-```
-
-### # oneOf()
-
-Returns one of the provided parameters at random.
-
-```javascript
-const result = oneOf('Larry', 'Curly', 'Moe')();
-
-// result ~= 'Curly'
-```
-
-### # arrayOf()
-
-Returns an array of the provided value a given number of times.
-
-```javascript
-const result = arrayOf(() => faker.color.rgb(), 4)();
-
-// result ~= ['#1ECBE1', '#961EE1', '#E1341E', '#6AE11E']
-```
-
-# Considerations
-
-A builder can be provided as the value for another builder.
-
-```javascript
-const buildAddress = build<Address>({
-    id: sequence(),
-    city: () => faker.address.city(),
-    country: () => faker.address.country()
-});
-
-const buildManager = build<Manager>({
-    id: sequence(),
-    name: () => faker.name.findName(),
-    address: () => buildAddress(),
-    employees: arrayOf(() => buildUser(), 3)
-});
-
-const manager = buildManager();
-
-// manager ~= {
-//     id: 1,
-//     name: 'Joann Osinski',
-//     address: {
-//         id: 1,
-//         city: 'East Jarretmouth',
-//         country: 'Greece'
-//     },
-//     employees: [
-//         {
-//             id: 1,
-//             name: 'Marcella Huels',
-//             job: 'Customer Intranet Developer'
-//         }, {
-//             id: 2,
-//             name: 'Alfonso Beer',
-//             job: 'Designer'
-//         }, {
-//             id: 3,
-//             name: 'Kelvin Sporer',
-//             job: 'Assistant'
-//         }
-//     ]
-// }
-```
-
-Overrides can be nested, and contain any value that would be valid in the builder.
-
-```javascript
-const manager = buildManager({
-    address: {
-        country: 'Malta'
-    }
-});
-```
-
-Overriding an array replaces the array. If you need to change values inside of an array it is recommended to modify the result after it is returned.
-
-```javascript
-const manager = buildManager();
-
-manager.employees[0].name = 'Samuel Mittensworth';
-manager.employees[2] = buildUser({
-    job: 'Executive Assistant'
-});
-```
-
-It is possible to trigger an infinite loop if the data structure is recursive.
-
-```javascript
-const a = build({ b });
-const b = build({ a });
-
-a(); // triggers infinite loop
-```
-
-So don't do that.
+All functions that are passed as values will be run, this dataset can be deeply nested.
 
 # Random generators
-
-If you don't want to use an external library and only need simple values there are some of those included as well.
 
 ### # randInt()
 
@@ -187,7 +72,7 @@ randDate({ timeAgo: 0, fromNow: 900000; })();
 
 ### # randString()
 
-Generate a random string. Can be given `charset` `length` values, the defaults are `'ln'` (lowercase and numbers) `5`. Charset can include `'u'` to add uppercase and `'s'` for special characters. Can be given a `chars` value, the default is `''` these are added to the charset.
+Generate a random string. Can be given `charset` `length` values, the defaults are `'ln'` (lowercase and numbers) `5`. Charset can include `'u'` to add uppercase and `'s'` for special characters. Can be given a `chars` value, the default is `''` these are added to the charset. Can be given `prefix` `postfix` values, the defaults are `''` `''`.
 
 ```javascript
 randString({ charset: '', chars: 'abcde', length: 6 })();
@@ -214,6 +99,117 @@ randParagraph({ sentencesMin: 2, sentencesMax: 50, multiply: 2 })();
 ```
 
 <sup>Two paragraphs of highly variable length.</sup>
+
+# Helpers
+
+### # sequence()
+
+Returns a number that is guaranteed to be unique, accepts a generator as a parameter for more control.
+
+```javascript
+const result = sequence(i => `user-${i}`)();
+
+// result ~= 'user-1'
+```
+
+### # oneOf()
+
+Returns one of the provided parameters at random.
+
+```javascript
+const result = oneOf('Larry', 'Curly', 'Moe')();
+
+// result ~= 'Curly'
+```
+
+### # arrayOf()
+
+Returns an array of the provided value a given number of times.
+
+```javascript
+const rgb = randString({ charset: 'n', chars: 'ABCDEF', prefix: '#' });
+const result = arrayOf(rgb, 4)();
+
+// result ~= ['#1ECBE1', '#961EE1', '#E1341E', '#6AE11E']
+```
+
+# Considerations
+
+A builder can be provided as the value for another builder.
+
+```javascript
+const buildAddress = build<Address>({
+    id: sequence(),
+    city: randWord({ capitalize: true }),
+    country: randWord({ capitalize: true })
+});
+
+const buildManager = build<Manager>({
+    id: sequence(),
+    name: randWord({ multiply: 2, capitalize: true }),
+    address: buildAddress,
+    employees: arrayOf(buildUser, 3)
+});
+
+const manager = buildManager();
+
+// manager ~= {
+//     id: 1,
+//     name: 'Joann Osinski',
+//     address: {
+//         id: 1,
+//         city: 'Silk',
+//         country: 'Yesterday'
+//     },
+//     employees: [
+//         {
+//             id: 1,
+//             name: 'Newspaper Important',
+//             job: 'Political Remember Hundred'
+//         }, {
+//             id: 2,
+//             name: 'Lot Instance',
+//             job: 'Scientific Shot Flower'
+//         }, {
+//             id: 3,
+//             name: 'Heavy Upward',
+//             job: 'Wonderful New Fence'
+//         }
+//     ]
+// }
+```
+
+Overrides can be nested, and contain any value that would be valid in the builder.
+
+```javascript
+const manager = buildManager({
+    address: {
+        country: 'Malta'
+    }
+});
+```
+
+Overriding an array replaces the array. If you need to change values inside of an array it is recommended to modify the result after it is returned.
+
+```javascript
+const manager = buildManager();
+
+manager.employees[0].name = 'Samuel Mittensworth';
+manager.employees[2] = buildUser({
+    job: 'Executive Assistant'
+});
+```
+
+It is possible to trigger an infinite loop if the data structure is recursive.
+
+```javascript
+const a = build({ b });
+const b = build({ a });
+
+a(); // triggers infinite loop
+```
+
+So don't do that.
 
 # Conclusion
 

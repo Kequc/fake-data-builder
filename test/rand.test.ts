@@ -111,6 +111,12 @@ describe('randString', () => {
         const chars = CHAR_LIST['n'] + 'abcdefGHIJK';
         assert.ok(str.split('').every(char => chars.includes(char)));
     });
+
+    it('generates a string with prefix and postfix', () => {
+        const str = randString({ prefix: 'start-', postfix: '-end' })();
+        assert.ok(str.startsWith('start-'));
+        assert.ok(str.endsWith('-end'));
+    });
 });
 
 describe('randWord', () => {
