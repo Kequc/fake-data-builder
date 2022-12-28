@@ -16,8 +16,8 @@ type TDateOptions = {
 
 export function randDate (opt?: TDateOptions): () => Date {
     const now = Date.now();
-    const min = now - (opt?.timeAgo ?? (YEAR_MS * 2));
-    const max = now + (opt?.fromNow ?? 0);
+    const min = now - check<number>(YEAR_MS * 2, opt?.timeAgo);
+    const max = now + check<number>(0, opt?.fromNow);
     return () => new Date(min + Math.random() * (max - min));
 }
 
@@ -27,18 +27,25 @@ type TStringOptions = {
     length?: number;
     prefix?: string;
     postfix?: string;
+    multiply?: number;
+    separator?: string;
 };
 
 export function randString (opt?: TStringOptions): () => string {
     const charset = check<string>('ln', opt?.charset);
-    const length = check<number>(5, opt?.length);
     const chars = charset.split('').map(c => check<string>('', CHAR_LIST[c])).join('') + check<string>('', opt?.chars);
+    const length = check<number>(5, opt?.length);
     const prefix = check<string>('', opt?.prefix);
     const postfix = check<string>('', opt?.postfix);
-    function generateChar () {
+    const multiply = check<number>(1, opt?.multiply);
+    const separator = check<string>(' ', opt?.separator);
+    function chooseChar () {
         return chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    return () => prefix + generateArray(length, generateChar).join('') + postfix;
+    function createString () {
+        return prefix + genString(length, chooseChar, '') + postfix;
+    }
+    return () => genString(multiply, createString, separator);
 }
 
 type TParagraphOptions = {
@@ -51,36 +58,43 @@ type TParagraphOptions = {
 };
 
 export function randParagraph (opt?: TParagraphOptions): () => string {
-    const numWords = randInt(minMax(5, 20, opt?.wordsMin, opt?.wordsMax));
     const numSentences = randInt(minMax(5, 20, opt?.sentencesMin, opt?.sentencesMax));
+    const numWords = randInt(minMax(5, 20, opt?.wordsMin, opt?.wordsMax));
     const multiply = check<number>(1, opt?.multiply);
     const separator = check<string>('\n\n', opt?.separator);
-    function generateSentence () {
-        return capitalize(generateArray(numWords(), chooseWord).join(' ') + '.');
+    function createSentence () {
+        return capital(genString(numWords(), chooseWord, ' ') + '.');
     }
-    function generateParagraph () {
-        return generateArray(numSentences(), generateSentence).join(' ');
+    function createParagraph () {
+        return genString(numSentences(), createSentence, ' ');
     }
-    return () => generateArray(multiply, generateParagraph).join(separator);
+    return () => genString(multiply, createParagraph, separator);
 }
 
+
 type TWordOptions = {
-    capitalize?: boolean;
     uppercase?: boolean;
+    capitalize?: boolean;
+    prefix?: string;
+    postfix?: string;
     multiply?: number;
     separator?: string;
 };
 
 export function randWord (opt?: TWordOptions): () => string {
+    const uppercase = check<boolean>(false, opt?.uppercase);
+    const capitalize = check<boolean>(false, opt?.capitalize);
+    const prefix = check<string>('', opt?.prefix);
+    const postfix = check<string>('', opt?.postfix);
     const multiply = check<number>(1, opt?.multiply);
     const separator = check<string>(' ', opt?.separator);
-    function generateWord () {
-        const word = chooseWord();
-        if (opt?.uppercase) return word.toUpperCase();
-        if (opt?.capitalize) return capitalize(word);
-        return word;
+    function createWord () {
+        let word = chooseWord();
+        if (uppercase) word = word.toUpperCase();
+        if (capitalize) word = capital(word);
+        return prefix + word + postfix;
     }
-    return () => generateArray(multiply, generateWord).join(separator);
+    return () => genString(multiply, createWord, separator);
 }
 
 type TFloatOptions = {
@@ -103,13 +117,11 @@ export function randInt (opt?: TIntOptions): () => number {
     return () => Math.floor(Math.random() * ((max - min) + 1)) + min;
 }
 
-// utils
-
 function chooseWord () {
     return WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
 }
 
-function capitalize (word: string): string {
+function capital (word: string): string {
     return word[0].toUpperCase() + word.slice(1);
 }
 
@@ -124,6 +136,6 @@ function check<T> (def: T, value?: unknown): T {
     return (typeof def === typeof value) ? value as T : def;
 }
 
-function generateArray<T> (length: number, containing: () => T): T[] {
-    return Array(length).fill(undefined).map(containing);
+function genString (length: number, callback: () => string, separator: string): string {
+    return Array(length).fill(undefined).map(callback).join(separator);
 }

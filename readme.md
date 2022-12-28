@@ -84,7 +84,7 @@ randString({ charset: '', chars: 'abcde', length: 6 })();
 
 ### # randWord()
 
-Generate a random string from a word list. Can be given `capitalize` `uppercase`, the defaults are `false` `false`. Can be given `multiply` `separator`, the defaults are `1` `' '` these are how many words to generate and how to separate them.
+Generate a random string from a word list. Can be given `capitalize` `uppercase`, the defaults are `false` `false`. Can be given `multiply` `separator`, the defaults are `1` `' '` these are how many words to generate and how to separate them. Can be given `prefix` `postfix` values, the defaults are `''` `''`.
 
 ```javascript
 randWord({ capitalize: true })();
