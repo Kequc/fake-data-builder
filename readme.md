@@ -28,9 +28,9 @@ const user: User = buildUser({
 // }
 ```
 
-All functions that are passed as values will be run, this dataset can be deeply nested.
+This dataset can be deeply nested, all functions that are passed as values will be run. What follows are a set of generators and helpers that are included.
 
-# Random generators
+# Generators
 
 ### # randInt()
 
@@ -157,7 +157,7 @@ const manager = buildManager();
 
 // manager ~= {
 //     id: 1,
-//     name: 'Joann Osinski',
+//     name: 'Bill Blanket',
 //     address: {
 //         id: 1,
 //         city: 'Silk',
