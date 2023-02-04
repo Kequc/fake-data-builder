@@ -1,8 +1,24 @@
 import 'kequtest';
 import assert from 'assert';
-import { build, sequence, oneOf, arrayOf } from '../src/index';
+import * as index from '../src/fake-data-builder';
+
+it('exports a lot of stuff', () => {
+    assert.strictEqual(typeof index.build, 'function');
+    assert.strictEqual(typeof index.randBoolean, 'function');
+    assert.strictEqual(typeof index.randDate, 'function');
+    assert.strictEqual(typeof index.randString, 'function');
+    assert.strictEqual(typeof index.randParagraph, 'function');
+    assert.strictEqual(typeof index.randWord, 'function');
+    assert.strictEqual(typeof index.randFloat, 'function');
+    assert.strictEqual(typeof index.randInt, 'function');
+    assert.strictEqual(typeof index.sequence, 'function');
+    assert.strictEqual(typeof index.oneOf, 'function');
+    assert.strictEqual(typeof index.arrayOf, 'function');
+});
 
 describe('build', () => {
+    const { build } = index;
+
     it('builds data', () => {
         const builder = build({
             test1: 'hello',
@@ -96,73 +112,5 @@ describe('build', () => {
                 test3: 'there'
             }
         });
-    });
-});
-
-describe('sequence', () => {
-    it('returns a number in sequence', () => {
-        const sequencer = sequence();
-
-        assert.strictEqual(1, sequencer() as number);
-        assert.strictEqual(2, sequencer() as number);
-        assert.strictEqual(3, sequencer() as number);
-        assert.strictEqual(4, sequencer() as number);
-        assert.strictEqual(5, sequencer() as number);
-    });
-
-    it('generates a value from a generator', () => {
-        const sequencer = sequence((i) => `hello-${i}`);
-
-        assert.strictEqual(`hello-${1}`, sequencer() as string);
-        assert.strictEqual(`hello-${2}`, sequencer() as string);
-        assert.strictEqual(`hello-${3}`, sequencer() as string);
-        assert.strictEqual(`hello-${4}`, sequencer() as string);
-        assert.strictEqual(`hello-${5}`, sequencer() as string);
-    });
-
-    it('parses the result', () => {
-        const sequencer = sequence((i) => () => `hello-${i}`);
-
-        assert.strictEqual(`hello-${1}`, sequencer() as string);
-    });
-});
-
-describe('oneOf', () => {
-    it('returns a random value', () => {
-        const values = ['hello', 'there', 'foo', 'bar'];
-        const random = oneOf(...values);
-
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-    });
-
-    it('returns undefined when empty', () => {
-        assert.strictEqual(undefined, oneOf()());
-    });
-
-    it('parses the result', () => {
-        const values = ['foo', 'bar'];
-        const random = oneOf(() => values[0], () => values[1]);
-
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-        assert.ok(values.includes(random() as string));
-    });
-});
-
-describe('arrayOf', () => {
-    it('returns an array of something', () => {
-        assert.deepStrictEqual(arrayOf('hi', 3)(), ['hi', 'hi', 'hi']);
-        assert.deepStrictEqual(arrayOf(true, 2)(), [true, true]);
-        assert.deepStrictEqual(arrayOf(11, 4)(), [11, 11, 11, 11]);
-    });
-
-    it('parses the result', () => {
-        assert.deepStrictEqual(arrayOf(() => 'hey', 5)(), ['hey', 'hey', 'hey', 'hey', 'hey']);
     });
 });

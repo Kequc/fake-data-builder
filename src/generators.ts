@@ -1,4 +1,4 @@
-import { CHAR_LIST, WORD_LIST, YEAR_MS } from './data';
+import { CHAR_LIST, WORD_LIST, YEAR_MS } from './util/data';
 
 type TBooleanOptions = {
     median?: number;

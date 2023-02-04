@@ -8,8 +8,8 @@ import {
     randWord,
     randDate,
     randBoolean
-} from '../src/rand';
-import { CHAR_LIST, WORD_LIST } from '../src/data';
+} from '../src/generators';
+import { CHAR_LIST, WORD_LIST } from '../src/util/data';
 
 describe('randFloat', () => {
     it('generates a number', () => {
