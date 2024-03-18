@@ -102,6 +102,16 @@ randParagraph({ sentencesMin: 2, sentencesMax: 50, multiply: 2 })();
 
 <sup>Two paragraphs of highly variable length.</sup>
 
+### # nullable()
+
+Returns either null or the provided value.
+
+```javascript
+nullable(randInt(), 0.6)();
+```
+
+<sup>Will be an integer 60% of the time.</sup>
+
 # Helpers
 
 ### # sequence()
@@ -188,6 +198,14 @@ const manager = buildManager({
     address: {
         country: 'Malta'
     }
+});
+```
+
+If you need to maintain the integrity of foreign keys it's easiest to iterate over the records you want associated.
+
+```javascript
+const profiles = users.map(user => buildProfile({
+    userId: user.id
 });
 ```
 

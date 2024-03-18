@@ -29,3 +29,9 @@ export function arrayOf<T> (value: TGen<T>, count = 1): () => T[] {
         return result;
     };
 }
+
+export function nullable<T> (value: TGen<T>, median = 0.5): () => T | null {
+    return function () {
+        return Math.random() > median ? null : parseValue(value) as unknown as T;
+    };
+}

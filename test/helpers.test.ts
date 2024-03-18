@@ -1,6 +1,6 @@
 import 'kequtest';
 import assert from 'assert';
-import { sequence, oneOf, arrayOf } from '../src/fake-data-builder';
+import { sequence, oneOf, arrayOf, nullable } from '../src/fake-data-builder';
 
 describe('sequence', () => {
     it('returns a number in sequence', () => {
@@ -67,5 +67,15 @@ describe('arrayOf', () => {
 
     it('parses the result', () => {
         assert.deepStrictEqual(arrayOf(() => 'hey', 5)(), ['hey', 'hey', 'hey', 'hey', 'hey']);
+    });
+});
+
+describe('nullable', () => {
+    it('returns a value or null', () => {
+        assert.ok([null, 'hello'].includes(nullable('hello')() as string | null));
+    });
+
+    it('parses the result', () => {
+        assert.ok([null, 'hello'].includes(nullable(() => 'hello')() as string | null));
     });
 });
